@@ -54,8 +54,8 @@ class kafkaAPI():
         return c
 
     @staticmethod
-    def send_to_kafka_topic_kerberos(detections: dict, kafka_ip: str, topic_name: str,
-                                     kafka_sasl_mechanism: str, kafka_krb5_user_keytab_path: str, kafka_krb5_username: str, kafka_debug: str):
+    def createProducer_kerberos(detections: dict, kafka_ip: str, topic_name: str,
+                                     kafka_sasl_mechanism: str, kafka_krb5_user_keytab_path: str, kafka_krb5_username: str, kafka_debug: bool):
         sasl_mechanism = kafka_sasl_mechanism
         producer_conf = {'bootstrap.servers': kafka_ip,
                          'security.protocol': 'SASL_PLAINTEXT',
@@ -67,7 +67,7 @@ class kafkaAPI():
 
         try:
             # 'KAFKA_DEBUG' has to be in os.environ
-            if kafka_debug.lower() == 'true':
+            if kafka_debug:
                 producer_conf['debug'] = 'security,broker'
 
             producer = Producer(**producer_conf)
@@ -83,19 +83,19 @@ class kafkaAPI():
             # p.flush()
 
     @staticmethod
-    def send_to_kafka_topic_without_login(kafka_ip: str, topic_name: str, kafka_sasl_mechanism: str, kafka_debug: str):
+    def createProducer_without_login(kafka_ip: str, topic_name: str, kafka_sasl_mechanism: str, kafka_debug: bool):
         sasl_mechanism = kafka_sasl_mechanism
         producer_conf = {'bootstrap.servers': kafka_ip}
 
         try:
             # 'KAFKA_DEBUG' has to be in os.environ
-            if kafka_debug.lower() == 'true':
+            if kafka_debug:
                 producer_conf['debug'] = 'security,broker'
 
             producer = Producer(**producer_conf)
 
             return producer
-        
+
         except BufferError:
             sys.stderr.write(
                 '%% Local producer queue is full (%d messages awaiting delivery): try again\n' % len(producer))
