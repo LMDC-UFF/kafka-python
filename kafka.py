@@ -72,12 +72,8 @@ class kafkaAPI():
 
             producer = Producer(**producer_conf)
 
-            json_str = json.dumps(detections)
-            # Produce line (without newline)
-            print('Content sent to kafka! ')  # , json_str.encode('utf8'))
-            producer.produce(topic_name, json_str.encode('utf8'))
-            producer.poll(0)
-            producer.flush()
+            return producer
+
         except BufferError:
             sys.stderr.write(
                 '%% Local producer queue is full (%d messages awaiting delivery): try again\n' % len(producer))
@@ -98,12 +94,8 @@ class kafkaAPI():
 
             producer = Producer(**producer_conf)
 
-            json_str = json.dumps(detections)
-            # Produce line (without newline)
-            print('Content sent to kafka! ')  # , json_str.encode('utf8'))
-            producer.produce(topic_name, json_str.encode('utf8'))
-            producer.poll(0)
-            producer.flush()
+            return producer
+        
         except BufferError:
             sys.stderr.write(
                 '%% Local producer queue is full (%d messages awaiting delivery): try again\n' % len(producer))
