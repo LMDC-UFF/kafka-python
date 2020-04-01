@@ -72,10 +72,25 @@ class kafkaAPI():
             sys.stderr.write('%% Local producer queue is full (%d messages awaiting delivery): try again\n' % len(producer))
             return None
 
+    @staticmethod
     def createProducerWithLoginAndPass(kafka_ip: str, group_id: str, kafkaUserName: str, kafkaPassword: str,
-                                       kafka_debug: bool=False):
+                                       securityProtocol: str='SASL_PLAINTEXT', kafka_debug: bool=False):
         # check this function
-        pass
+        try:
+            producer_conf = {'bootstrap.servers': kafka_ip,
+                            'security.protocol': securityProtocol,
+                            'sasl.mechanism': 'PLAIN',
+                            'sasl.username':kafkaUserName,
+                            'sasl.password': kafkaPassword}
+            if kafka_debug:
+                producer_conf['debug'] = 'security,broker'
+
+            producer = Producer(**producer_conf)
+            return producer
+
+        except BufferError:
+            sys.stderr.write('%% Local producer queue is full (%d messages awaiting delivery): try again\n' % len(producer))
+            return None
 
     @staticmethod
     def createProducerWithoutLogin(kafka_ip: str, topic_name: str, kafka_debug: bool=False):
