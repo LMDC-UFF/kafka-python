@@ -1,0 +1,10 @@
+version: '3.3'
+services:
+  pdfextractor-cpu:
+    volumes:
+        - ./../:/SSD_inference
+    image: 'pdfextractor-cpu:v1.8'
+    container_name: mykafka_name_container_2
+    privileged: true 
+    extra_hosts:
+        - 'sandbox-hdp.hortonworks.com:192.168.0.205'
