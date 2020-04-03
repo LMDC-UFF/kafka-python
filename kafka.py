@@ -73,7 +73,7 @@ class kafkaAPI():
             return None
 
     @staticmethod
-    def createProducerWithLoginAndPass(kafka_ip: str, group_id: str, kafkaUserName: str, kafkaPassword: str,
+    def createProducerWithLoginAndPass(kafka_ip: str, kafkaUserName: str, kafkaPassword: str,
                                        securityProtocol: str='SASL_PLAINTEXT', kafka_debug: bool=False):
         # check this function
         try:
@@ -93,7 +93,7 @@ class kafkaAPI():
             return None
 
     @staticmethod
-    def createProducerWithoutLogin(kafka_ip: str, topic_name: str, kafka_debug: bool=False):
+    def createProducerWithoutLogin(kafka_ip: str, kafka_debug: bool=False):
         try:
             producer_conf = {'bootstrap.servers': kafka_ip}
             if kafka_debug:
