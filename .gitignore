@@ -1,0 +1,4 @@
+/dist/
+/build/
+/kafka_lmdc.egg-info/
+.idea/*
