@@ -8,7 +8,7 @@ def readme():
 # This call to setup() does all the work
 setup(
     name="kafka-lmdc",
-    version="2.0.1",
+    version="2.0.4",
     description="Esta biblioteca tem como objetivo a facilitação do uso de Kerberos e Kafka em Python.",
     long_description=readme(),
     long_description_content_type="text/markdown",

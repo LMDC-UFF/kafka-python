@@ -156,8 +156,9 @@ class KafkaAPI():
             return None
 
     @staticmethod
-    def createConsumerFromEnvs() -> Consumer:
-        groupId = os.environ['KAFKA_GROUP_ID']
+    def createConsumerFromEnvs(groupId=None, autoOffsetReset: str = 'earliest') -> Consumer:
+        if groupId is None:
+            groupId = os.environ['KAFKA_GROUP_ID']
         authType = os.environ['KAFKA_SASL_MECHANISM']  # GSSAPI(Kerberos) | NOSASL(Normal) | PLAIN(Password)
         severs = os.environ['KAFKA_HOST_URL']
         debug = os.environ['KAFKA_DEBUG'].lower() == 'true'
@@ -166,7 +167,7 @@ class KafkaAPI():
                 severs, groupId,
                 os.environ['KAFKA_KRB5_USER_KEYTAB_PATH'],
                 os.environ['KAFKA_KRB5_USERNAME'],
-                'earliest',
+                autoOffsetReset,
                 'SASL_PLAINTEXT',
                 debug
             )
@@ -176,11 +177,11 @@ class KafkaAPI():
                 groupId,
                 os.environ['KAFKA_PLAIN_USERNAME'],
                 os.environ['KAFKA_PLAIN_PASSWORD'],
-                'earliest',
+                autoOffsetReset,
                 'SASL_PLAINTEXT',
                 debug
             )
         elif authType == "NOSASL":
-            return KafkaAPI.createConsumerWithoutLogin(severs, groupId, 'earliest', debug)
+            return KafkaAPI.createConsumerWithoutLogin(severs, groupId, autoOffsetReset, debug)
         else:
             return None
