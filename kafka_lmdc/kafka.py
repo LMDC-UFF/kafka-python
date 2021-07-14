@@ -15,6 +15,7 @@ class KafkaAPI():
                                    kerberosUsername: str,
                                    autoOffsetReset: str = 'earliest',
                                    securityProtocol: str = 'SASL_PLAINTEXT',
+                                   maxPollIntervalMs: int = 300000, # (by default 5mins)
                                    kafka_debug: bool = False) -> Consumer:
         conf = {
             'bootstrap.servers': kafka_ip,
@@ -24,7 +25,8 @@ class KafkaAPI():
             'sasl.mechanism': 'GSSAPI',
             'sasl.kerberos.service.name': 'kafka',
             'sasl.kerberos.keytab': kerberosKeyTabPath,
-            'sasl.kerberos.principal': kerberosUsername
+            'sasl.kerberos.principal': kerberosUsername,
+            'max.poll.interval.ms': maxPollIntervalMs
         }
         if kafka_debug:
             conf['debug'] = 'security,broker'
@@ -39,6 +41,7 @@ class KafkaAPI():
                                        kafkaPassword: str,
                                        autoOffsetReset: str = 'earliest',
                                        securityProtocol: str = 'SASL_PLAINTEXT',
+                                       maxPollIntervalMs: int = 300000, # (by default 5mins)
                                        kafka_debug: bool = False) -> Consumer:
 
         conf = {'bootstrap.servers': kafka_ip,
@@ -47,7 +50,8 @@ class KafkaAPI():
                 'security.protocol': securityProtocol,
                 'sasl.mechanism': 'PLAIN',
                 'sasl.username': kafkaUserName,
-                'sasl.password': kafkaPassword
+                'sasl.password': kafkaPassword,
+                'max.poll.interval.ms': maxPollIntervalMs
                 }
         if kafka_debug:
             conf['debug'] = 'security,broker'
@@ -58,11 +62,13 @@ class KafkaAPI():
     def createConsumerWithoutLogin(kafka_ip: str,
                                    group_id: str,
                                    autoOffsetReset: str = 'earliest',
+                                   maxPollIntervalMs: int = 300000, # (by default 5mins)
                                    kafka_debug: bool = False) -> Consumer:
         conf = {
             'bootstrap.servers': kafka_ip,
             'group.id': group_id,
-            'auto.offset.reset': autoOffsetReset
+            'auto.offset.reset': autoOffsetReset,
+            'max.poll.interval.ms': maxPollIntervalMs
         }
         if kafka_debug:
             conf['debug'] = 'security,broker'
@@ -162,6 +168,7 @@ class KafkaAPI():
         authType = os.environ['KAFKA_SASL_MECHANISM']  # GSSAPI(Kerberos) | NOSASL(Normal) | PLAIN(Password)
         severs = os.environ['KAFKA_HOST_URL']
         debug = os.environ['KAFKA_DEBUG'].lower() == 'true'
+        maxPollIntervalMs = int(os.getenv('KAFKA_MAX_POLL_INTERVAL_MS', '300000'))
         if authType == "GSSAPI":
             return KafkaAPI.createConsumerWithKerberos(
                 severs, groupId,
@@ -169,6 +176,7 @@ class KafkaAPI():
                 os.environ['KAFKA_KRB5_USERNAME'],
                 autoOffsetReset,
                 'SASL_PLAINTEXT',
+                maxPollIntervalMs,
                 debug
             )
         elif authType == "PLAIN":
@@ -179,9 +187,10 @@ class KafkaAPI():
                 os.environ['KAFKA_PLAIN_PASSWORD'],
                 autoOffsetReset,
                 'SASL_PLAINTEXT',
+                maxPollIntervalMs,
                 debug
             )
         elif authType == "NOSASL":
-            return KafkaAPI.createConsumerWithoutLogin(severs, groupId, autoOffsetReset, debug)
+            return KafkaAPI.createConsumerWithoutLogin(severs, groupId, autoOffsetReset, maxPollIntervalMs, debug)
         else:
             return None

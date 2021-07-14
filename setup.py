@@ -1,15 +1,15 @@
 from setuptools import setup
 
 def readme():
-    with open('README.md') as f:
+    with open('README.md', encoding='utf8') as f: #enconding utf8 *novo
         README = f.read()
     return README
 
 # This call to setup() does all the work
 setup(
     name="kafka-lmdc",
-    version="2.0.4",
-    description="Esta biblioteca tem como objetivo a facilitação do uso de Kerberos e Kafka em Python.",
+    version="2.0.5",
+    description="Esta biblioteca tem como objetivo a facilitação do uso de Kerberos e Kafka em Python. (Agregando max.poll.interval.ms no consumer na versao 2.0.5)",
     long_description=readme(),
     long_description_content_type="text/markdown",
     url="https://github.com/LMDC-UFF/kafka-python",
